@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const fakeUser = {
-    _id: '2222',
+    _id: '1',
     email: 'teste@teste.com',
     name: 'Usuário Teste',
   };
