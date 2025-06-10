@@ -1,16 +1,18 @@
 
 async function PostRoadMap(userid,name,roadmap) {
       try {
-        const response = fetch(`https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net//api/roadmap/PostRoadMap`, {
+        const response = await fetch(`https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net//api/RoadMap/PostRoadMap`, {
+            method: "POST",
             headers: {
               Accept: "application/json",
+              "Content-Type": "application/json",
             },
-            body: {
+            body: JSON.stringify({
                 userid: userid,
                 name: name,
-                roadmap: roadmap,
-            },
-          })
+                roadmap: roadmap
+            }),
+          });
         const data = await response.json(); // se for um fetch
         return data;
     } catch (error) {
@@ -18,3 +20,5 @@ async function PostRoadMap(userid,name,roadmap) {
         return null;
     }
 }
+
+export default PostRoadMap;
