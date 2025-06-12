@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-const Markdown = () => {
+const Markdown = ({setroadmap}) => {
   const [markdown, setMarkdown] = useState('# Digite seu Markdown aqui');
 
   const handleSubmit = () => {
-    alert('Markdown enviado ao backend com sucesso!');
+    setroadmap(markdown);
     // Aqui você pode adicionar a lógica real de envio usando fetch ou axios
   };
 
@@ -20,7 +20,7 @@ const Markdown = () => {
           placeholder="# Digite seu Markdown aqui"
         />
         <button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit()}
           className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-lg transition"
         >
           Enviar

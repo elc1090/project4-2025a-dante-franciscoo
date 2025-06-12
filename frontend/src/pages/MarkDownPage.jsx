@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 import Markdown from '../components/MarkDown';
 import Footer from '../layouts/Footer';
 import InstructionsRoadMap from '../layouts/InstructionsRoadMap';
-import { useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
+import PostRoadMap from '../requests/PostRoadMap';
 
 const MarkDownPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [roadmapName, setRoadmapName] = useState('');
+  const [roadmap, setRoadmap] = useState("");
+  const { user } = useAuth();
+  let navigate = useNavigate();
   const categories = [
   'Frontend Developer',
   'Backend Developer',
@@ -21,6 +26,23 @@ const MarkDownPage = () => {
   'Product Manager',
   'IOS Developer',
 ];
+
+async function postData(user,roadmapName,roadmap){
+  try{
+    const Data = await PostRoadMap(user.id,roadmapName,roadmap);
+    if(Data){
+      navigate(`/roadmap/${Data.id}`);
+    }
+  } catch(error){
+      alert("Erro ao criar roadmap");
+      navigate(`/`);
+  }
+}
+
+const handleRoadMap = (roadmapText) => {
+  setRoadmap(roadmapText);
+  postData(user,roadmapName,roadmap);
+}
 
   return (
     <>
@@ -75,7 +97,7 @@ const MarkDownPage = () => {
 
       {/* Editor Markdown */}
       <div className="container mx-auto p-6 max-w-4xl">
-        <Markdown />
+        <Markdown setroadmap = {handleRoadMap}/>
       </div>
 
       <Footer />
