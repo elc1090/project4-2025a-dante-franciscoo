@@ -1,13 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Footer from '../layouts/Footer';
 import { useAuth } from '../auth/AuthContext';
+import PutRoadMap from '../requests/PutRoadMap';
+import Get_RoadMap from '../requests/GetRoadMap';
 
 const fakeRoadmaps = [
-  { _id: '1',
-    title: 'Como se tornar Frontend Developer',
-    authorId: '2222',
-    description: `
+  { id: '1',
+    name: 'Como se tornar Frontend Developer',
+    userid: '2222',
+    roadmap: `
     # Como se tornar Frontend Developer
 
 Este roadmap abrange uma jornada completa para quem deseja atuar como desenvolvedor frontend. A seguir estão os principais tópicos:
@@ -24,7 +26,7 @@ Este roadmap abrange uma jornada completa para quem deseja atuar como desenvolve
 Ao final deste roadmap, você será capaz de construir aplicações frontend profissionais, com foco em usabilidade, estética e performance.
 `
   },
-  { _id: '2', title: 'Desenvolvimento Mobile',  authorId: '3333', description: `
+  { id: '2', name: 'Desenvolvimento Mobile',  userid: '3333', roadmap: `
 # Introdução ao Desenvolvimento Mobile
 
 O desenvolvimento mobile envolve a criação de aplicativos para dispositivos móveis, como smartphones e tablets. Existem diversas abordagens e ferramentas disponíveis.
@@ -62,7 +64,7 @@ fun sayHello() {
 Com dedicação e prática, você poderá criar aplicações móveis incríveis e impactantes!
 `
 },
-  { _id: '3', title: 'DevOps Essentials', authorId: '4444', description: `
+  { id: '3', name: 'DevOps Essentials', userid: '4444', roadmap: `
     #Introdução a CI/CD, Docker, Kubernetes e práticas DevOps.
 
     ## teste 1
@@ -88,16 +90,28 @@ const EditarRoadmapPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  const roadmap = fakeRoadmaps.find((r) => r._id === roadmapId);
+  const [roadmap,setRoadmap] = useState();
 
-  const [title, setTitle] = useState(roadmap ? roadmap.title : '');
-  const [description, setDescription] = useState(roadmap ? roadmap.description : '');
+  const [name, setname] = useState(roadmap ? roadmap.name : '');
+  const [MarkDown, setMarkDown ] = useState(roadmap ? roadmap.roadmap : '');
+
+  useEffect(() => {
+    async function getData(){
+      const data = await Get_RoadMap(roadmapId);
+      if(data){
+        setRoadmap(data);
+        setname(data.name);
+        setMarkDown(data.roadmap);
+      }
+    }
+    getData();
+  },[]);
 
   if (!roadmap) {
     return <div className="max-w-3xl mx-auto p-4 text-white">Roadmap não encontrado.</div>;
   }
 
-  const isOwner = user && roadmap.authorId === user._id;
+  const isOwner = user && roadmap.userid === user.id;
 
   if (!isOwner) {
     return <div className="max-w-3xl mx-auto p-4 text-white">Você não tem permissão para editar este roadmap.</div>;
@@ -105,9 +119,15 @@ const EditarRoadmapPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(`Roadmap ${roadmap._id} atualizado:`, { title, description });
+    try {
+      PutRoadMap(roadmap.id,roadmap.userid,name,MarkDown);
+    } catch (error) {
+      alert("Erro ao editar RoadMap");
+      navigate(-1);
+    }
+    console.log(`Roadmap ${roadmap.id} atualizado:`, { name, MarkDown });
     alert('Roadmap atualizado com sucesso!');
-    navigate(`/roadmaps/${roadmap._id}`);
+    navigate(`/roadmaps/${roadmap.id}`);
   };
 
   return (
@@ -120,8 +140,8 @@ const EditarRoadmapPage = () => {
             <label className="block font-semibold text-white">Título:</label>
             <input
               type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={name}
+              onChange={(e) => setname(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded bg-transparent text-white placeholder-white"
               required
             />
@@ -130,8 +150,8 @@ const EditarRoadmapPage = () => {
           <div>
             <label className="block font-semibold text-white">Descrição (Markdown):</label>
             <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={MarkDown}
+              onChange={(e) => setMarkDown(e.target.value)}
               rows="10"
               className="w-full p-2 border border-gray-300 rounded bg-transparent text-white placeholder-white"
               required

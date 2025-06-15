@@ -8,6 +8,8 @@ import MarkDownPage from './pages/MarkDownPage'
 import Header from './layouts/Header'
 import RoadMapDetailsPage from './pages/RoadMapDetailsPage'
 import EditarRoadmapPage from './pages/EditarRoadmapPage'
+import MermaidGraph from './pages/TesteMermaid'
+
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
         <Route path="/roadmaps" element={<RoadMapsPage />} />
         <Route path="/roadmaps/:roadmapId" element={<RoadMapDetailsPage />} />
         <Route path="/editar-roadmap/:roadmapId" element={<EditarRoadmapPage />} />
-        <Route path="/criar-mark" element={<MarkDownPage />} />  
+        <Route path="/criar-mark" element={<MarkDownPage />} /> 
+        <Route path="/teste" element={<MermaidGraph />} /> 
       </Routes>
     </>
   );
