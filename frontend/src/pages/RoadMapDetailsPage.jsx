@@ -4,6 +4,7 @@ import Footer from '../layouts/Footer';
 import MarkdownAccordion from '../components/MarkdownAccordion';
 import { useAuth } from '../auth/AuthContext';
 import Get_RoadMap from '../requests/GetRoadMap';
+import DeleteRoadMap from '../requests/DeleteRoadMap';
 
 const fakeRoadmaps = [
   { id: '1',
@@ -108,7 +109,8 @@ const RoadMapDetailsPage = () => {
 
   const isOwner = user && roadmap.userid === user.id;
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    await DeleteRoadMap(roadmap.id);
     console.log(`Roadmap ${roadmap.id} excluído pelo usuário ${user.id}`);
     alert('Roadmap excluído!');
   };
