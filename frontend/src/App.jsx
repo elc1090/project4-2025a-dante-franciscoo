@@ -11,6 +11,7 @@ import EditarRoadmapPage from './pages/EditarRoadmapPage'
 import TestePage from './pages/TestePage'
 import RegisterPage from './pages/RegisterPage'
 
+
 function App() {
   return (
     <>
@@ -24,7 +25,6 @@ function App() {
         <Route path="/editar-roadmap/:roadmapId" element={<EditarRoadmapPage />} />
         <Route path="/criar-mark" element={<MarkDownPage />} />
         <Route path="/teste" element={<TestePage />} /> 
-
       </Routes>
     </>
   );
