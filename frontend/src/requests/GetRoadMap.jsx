@@ -26,6 +26,7 @@ function GetRoadMapbyId(id) {
     return fetch(`${API_URL}/api/RoadMap/GetRoadMap/${id}`, {
         headers: {
             Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona o token de autenticação
         },
     });
 }

@@ -82,24 +82,31 @@ const register = async (email, password, name) => {
     setUser(null);
     localStorage.removeItem('token');
   };
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
 
-  // Opcional: Carregar user de um token existente
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser({
-          email: payload.email,
-          name: payload.name,
-          id: payload.sub,
-          role: payload.role || 'user'
-        });
-      } catch {
+      const now = Date.now() / 1000; // em segundos
+      if (payload.exp && payload.exp < now) {
+        // Token expirado
         logout();
+        return;
       }
+
+      setUser({
+        email: payload.email,
+        name: payload.name,
+        id: payload.sub,
+        role: payload.role || 'user'
+      });
+    } catch {
+      logout();
     }
-  }, []);
+  }
+}, []);
+
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register }}>

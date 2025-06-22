@@ -28,10 +28,10 @@ const MarkDownPage = () => {
 ];
 
 async function postData(user,roadmapName,roadmap){
-  try{
-    const Data = await PostRoadMap(user.id,roadmapName,roadmap);
+  try {
+    const Data = await PostRoadMap(user.id, roadmapName, roadmap);
     if(Data){
-      navigate(`/roadmap/${Data.id}`);
+      navigate(`/roadmaps/`);
     }
   } catch(error){
       alert("Erro ao criar roadmap");
@@ -41,7 +41,7 @@ async function postData(user,roadmapName,roadmap){
 
 const handleRoadMap = (roadmapText) => {
   setRoadmap(roadmapText);
-  postData(user,roadmapName,roadmap);
+  postData(user, roadmapName, roadmapText);
 }
 
   return (

@@ -4,6 +4,7 @@ import Footer from '../layouts/Footer';
 import MarkdownAccordion from '../components/MarkdownAccordion';
 import { useAuth } from '../auth/AuthContext';
 import Get_RoadMap from '../requests/GetRoadMap';
+import DeleteRoadMap from '../requests/DeleteRoadMap';
 import mermaid from 'mermaid';
 import MarkdownTimeline from '../components/MarkdownTimeline';
 
@@ -90,6 +91,7 @@ Com dedicação e prática, você poderá criar aplicações móveis incríveis 
 
 const RoadMapDetailsPage = () => {
   const [roadmap, setRoadMap] = useState(null);
+  const [isowner, setIsOwner] = useState(false);
   const { roadmapId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -102,7 +104,11 @@ const RoadMapDetailsPage = () => {
   useEffect(() => {
     async function getData() {
       const data = await Get_RoadMap(roadmapId);
-      if (data) setRoadMap(data);
+      if (data) {
+        setRoadMap(data);
+        setIsOwner(data.isOwner);
+      }
+
     }
     getData();
   }, [roadmapId]);
@@ -137,10 +143,8 @@ const RoadMapDetailsPage = () => {
     };
   }, [aiOutput]);
 
-  const isOwner = user && roadmap?.userid === user.id;
-
   const handleDelete = () => {
-    console.log(`Roadmap ${roadmap?.id} excluído pelo usuário ${user.id}`);
+    DeleteRoadMap(roadmap.id);
     alert('Roadmap excluído!');
   };
 
@@ -155,7 +159,10 @@ const RoadMapDetailsPage = () => {
     try {
       const res = await fetch('http://localhost:5259/api/OpenAi/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+           'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify({
           prompt: `Retorne um diagrama mermaid para este roadmap em markdown:\n\n${roadmap.roadmap}`,
         }),
@@ -195,7 +202,7 @@ const RoadMapDetailsPage = () => {
           <MarkdownTimeline content={roadmap.roadmap} />
         )}
 
-        {isOwner && (
+        {isowner && (
           <div className="mt-4 flex space-x-4">
             <button
               onClick={handleEdit}
