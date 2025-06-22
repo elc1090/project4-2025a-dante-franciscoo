@@ -13,7 +13,9 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const result = await register(username, email, password); // Lembre-se de ajustar isso no AuthContext
+    console.log("clicado");
+
+    const result = await register(email, password, username);
 
     if (result.success) {
       navigate('/');

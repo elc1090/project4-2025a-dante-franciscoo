@@ -24,7 +24,7 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-4">
           {user ? (
             <>
-              <span className="text-white font-medium">Olá, {user.name}</span>
+              <span className="text-white font-medium">Olá, {user.email}</span>
               <Link
                 to="/criar-mark"
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition font-medium"
