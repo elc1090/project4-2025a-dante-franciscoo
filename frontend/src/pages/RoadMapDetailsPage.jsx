@@ -1,9 +1,11 @@
-import { useParams, useNavigate  } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import Footer from '../layouts/Footer';
 import MarkdownAccordion from '../components/MarkdownAccordion';
 import { useAuth } from '../auth/AuthContext';
 import Get_RoadMap from '../requests/GetRoadMap';
+import mermaid from 'mermaid';
+import MarkdownTimeline from '../components/MarkdownTimeline';
 
 const fakeRoadmaps = [
   { id: '1',
@@ -85,42 +87,113 @@ Com dedicação e prática, você poderá criar aplicações móveis incríveis 
     ` },
 ];
 
+
 const RoadMapDetailsPage = () => {
-  const [roadmap, setRoadMap] = useState(fakeRoadmaps.find((r) => r._id === 2));
+  const [roadmap, setRoadMap] = useState(null);
   const { roadmapId } = useParams();
-  const navigate = useNavigate();  // <-- Hook para navegar
+  const navigate = useNavigate();
   const { user } = useAuth();
-  //fakeRoadmaps.find((r) => r.id === roadmapId);
+  const [loading, setLoading] = useState(false);
+  const [aiOutput, setAiOutput] = useState('');
+  const [renderError, setRenderError] = useState('');
+  const [viewMode, setViewMode] = useState('accordion'); // 👈 modo de visualização
+  const mermaidRef = useRef(null);
 
   useEffect(() => {
-    async function getData(){
+    async function getData() {
       const data = await Get_RoadMap(roadmapId);
-      if(data){
-        setRoadMap(data);
-      }
+      if (data) setRoadMap(data);
     }
     getData();
-  },[]);
+  }, [roadmapId]);
+
+  useEffect(() => {
+    if (!mermaidRef.current) return;
+    mermaidRef.current.innerHTML = '';
+    setRenderError('');
+
+    if (aiOutput) {
+      mermaid.initialize({ startOnLoad: false, theme: "dark" });
+
+      const mermaidCode = aiOutput
+        .replace(/```mermaid/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+      const uniqueId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+
+      mermaid
+        .render(uniqueId, mermaidCode)
+        .then(({ svg }) => {
+          mermaidRef.current.innerHTML = svg;
+        })
+        .catch(err => {
+          setRenderError(`Erro ao renderizar Mermaid: ${err.message}`);
+        });
+    }
+
+    return () => {
+      if (mermaidRef.current) mermaidRef.current.innerHTML = '';
+    };
+  }, [aiOutput]);
+
+  const isOwner = user && roadmap?.userid === user.id;
+
+  const handleDelete = () => {
+    console.log(`Roadmap ${roadmap?.id} excluído pelo usuário ${user.id}`);
+    alert('Roadmap excluído!');
+  };
+
+  const handleEdit = () => {
+    navigate(`/editar-roadmap/${roadmap?.id}`);
+  };
+
+  const gerarDiagrama = async () => {
+    setLoading(true);
+    setAiOutput('');
+    setRenderError('');
+    try {
+      const res = await fetch('http://localhost:5259/api/OpenAi/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: `Retorne um diagrama mermaid para este roadmap em markdown:\n\n${roadmap.roadmap}`,
+        }),
+      });
+      const data = await res.json();
+      setAiOutput(data.message || 'Resposta vazia.');
+    } catch (err) {
+      setAiOutput('');
+      setRenderError('Erro ao chamar a API.');
+      console.error(err);
+    }
+    setLoading(false);
+  };
 
   if (!roadmap) {
     return <div className="max-w-3xl mx-auto p-4">Roadmap não encontrado.</div>;
   }
 
-  const isOwner = user && roadmap.userid === user.id;
-
-  const handleDelete = () => {
-    console.log(`Roadmap ${roadmap.id} excluído pelo usuário ${user.id}`);
-    alert('Roadmap excluído!');
-  };
-
-  const handleEdit = () => {
-    navigate(`/editar-roadmap/${roadmap.id}`);
-  };
-
   return (
     <>
       <div className="max-w-3xl mx-auto p-4 mt-20">
-        <MarkdownAccordion content={roadmap.roadmap} />
+
+        {/* 🔄 Botão de alternância de visualização */}
+        <div className="mb-8">
+          <button
+            onClick={() => setViewMode(viewMode === 'accordion' ? 'timeline' : 'accordion')}
+            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+          >
+            Alternar para {viewMode === 'accordion' ? 'Timeline' : 'Accordion'}
+          </button>
+        </div>
+
+        {/* 🧩 Renderiza o componente certo */}
+        {viewMode === 'accordion' ? (
+          <MarkdownAccordion content={roadmap.roadmap} />
+        ) : (
+          <MarkdownTimeline content={roadmap.roadmap} />
+        )}
 
         {isOwner && (
           <div className="mt-4 flex space-x-4">
@@ -139,6 +212,26 @@ const RoadMapDetailsPage = () => {
             </button>
           </div>
         )}
+
+        {/* 🤖 Diagrama Mermaid com IA */}
+        <div className="mt-6">
+          <button
+            onClick={gerarDiagrama}
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            disabled={loading}
+          >
+            {loading ? 'Gerando diagrama...' : 'Gerar Diagrama com IA'}
+          </button>
+
+          <div className="mt-4 bg-gray-900 p-4 rounded">
+            <div ref={mermaidRef} />
+            {renderError && (
+              <pre className="text-red-400 whitespace-pre-wrap mt-2">
+                {renderError}
+              </pre>
+            )}
+          </div>
+        </div>
       </div>
 
       <Footer />
