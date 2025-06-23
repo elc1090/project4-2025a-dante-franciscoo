@@ -168,7 +168,7 @@ const RoadMapDetailsPage = () => {
         }),
       });
       const data = await res.json();
-      setAiOutput(data.message || 'Resposta vazia.');
+      setAiOutput(JSON.parse(data.message) || 'Resposta vazia.');
     } catch (err) {
       setAiOutput('');
       setRenderError('Erro ao chamar a API.');
