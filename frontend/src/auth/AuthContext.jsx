@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-const API_URL = "http://localhost:5259"; // Porta padrão do .NET backend
+const API_URL = "https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net"; // Porta padrão do .NET backend
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

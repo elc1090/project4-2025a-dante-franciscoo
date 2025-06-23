@@ -157,14 +157,14 @@ const RoadMapDetailsPage = () => {
     setAiOutput('');
     setRenderError('');
     try {
-      const res = await fetch('http://localhost:5259/api/OpenAi/chat', {
+      const res = await fetch('https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net/api/AIApi/SendPrompt', {
         method: 'POST',
         headers: {
            'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
-          prompt: `Retorne um diagrama mermaid para este roadmap em markdown:\n\n${roadmap.roadmap}`,
+          prompt: `Retorne somente um diagrama flowchart mermaid para este roadmap em markdown:\n\n${roadmap.roadmap}`,
         }),
       });
       const data = await res.json();

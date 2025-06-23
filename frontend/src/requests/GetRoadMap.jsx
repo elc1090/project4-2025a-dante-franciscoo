@@ -1,7 +1,7 @@
 
 
 // src/api/Get_RoadMap.js
-const API_URL = "http://localhost:5259"; // Porta padrão do .NET backend
+const API_URL = "https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net"; // Porta padrão do .NET backend
 
 async function Get_RoadMap(id) {
     try {

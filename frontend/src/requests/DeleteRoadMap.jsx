@@ -1,7 +1,7 @@
 
 async function DeleteRoadMap(id) {
     try {
-      await fetch(`http://localhost:5259/api/RoadMap/DeleteRoadMap/${id}`, {
+      await fetch(`https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net/api/RoadMap/DeleteRoadMap/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
