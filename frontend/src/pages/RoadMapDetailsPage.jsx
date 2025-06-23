@@ -168,7 +168,8 @@ const RoadMapDetailsPage = () => {
         }),
       });
       const data = await res.json();
-      setAiOutput(JSON.parse(data.message) || 'Resposta vazia.');
+      const mermaidCode = data.response; // já está em string, não precisa de JSON.parse
+      setAiOutput(mermaidCode);
     } catch (err) {
       setAiOutput('');
       setRenderError('Erro ao chamar a API.');
