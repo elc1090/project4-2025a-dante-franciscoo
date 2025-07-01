@@ -89,9 +89,8 @@ const EditarRoadmapPage = () => {
   const { roadmapId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-
+  const [isowner, setIsOwner] = useState(false);
   const [roadmap,setRoadmap] = useState();
-
   const [name, setname] = useState(roadmap ? roadmap.name : '');
   const [MarkDown, setMarkDown ] = useState(roadmap ? roadmap.roadmap : '');
 
@@ -102,6 +101,7 @@ const EditarRoadmapPage = () => {
         setRoadmap(data);
         setname(data.name);
         setMarkDown(data.roadmap);
+        setIsOwner(data.isOwner);
       }
     }
     getData();
@@ -111,9 +111,7 @@ const EditarRoadmapPage = () => {
     return <div className="max-w-3xl mx-auto p-4 text-white">Roadmap não encontrado.</div>;
   }
 
-  const isOwner = user && roadmap.userid === user.id;
-
-  if (!isOwner) {
+  if (!isowner) {
     return <div className="max-w-3xl mx-auto p-4 text-white">Você não tem permissão para editar este roadmap.</div>;
   }
 

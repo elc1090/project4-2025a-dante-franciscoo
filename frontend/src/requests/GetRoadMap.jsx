@@ -1,9 +1,12 @@
 
 
-async function Get_RoadMap(id){
+// src/api/Get_RoadMap.js
+const API_URL = "https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net"; // Porta padrão do .NET backend
+
+async function Get_RoadMap(id) {
     try {
         const response = id == null ? await GetRoadMap() : await GetRoadMapbyId(id);
-        const data = await response.json(); // se for um fetch
+        const data = await response.json();
         return data;
     } catch (error) {
         console.error('Erro ao buscar lista:', error);
@@ -11,20 +14,21 @@ async function Get_RoadMap(id){
     }
 }
 
-function GetRoadMap(){
-    return fetch(`https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net/api/RoadMap/GetRoadMap`, {
+function GetRoadMap() {
+    return fetch(`${API_URL}/api/RoadMap/GetRoadMap`, {
         headers: {
-          Accept: "application/json",
+            Accept: "application/json",
         },
-      })
+    });
 }
 
-function GetRoadMapbyId(id){
-    return fetch(`https://roadmap-api-g3dbgweehabxczej.brazilsouth-01.azurewebsites.net/api/RoadMap/GetRoadMap/${id}`, {
+function GetRoadMapbyId(id) {
+    return fetch(`${API_URL}/api/RoadMap/GetRoadMap/${id}`, {
         headers: {
-          Accept: "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Adiciona o token de autenticação
         },
-    })
+    });
 }
 
 export default Get_RoadMap;
