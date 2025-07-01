@@ -3,8 +3,6 @@
 GET {{WebApiBackend_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###"Host=aws-0-sa-east-1.pooler.supabase.com; Port=6543; Database=postgres; Username=postgres.xlxjklumqctqmasonrur; Password=Chico_Postgres; Timeout=15; CommandTimeout=60;"
-
 GET http://localhost:5259/api/roadmap/GetRoadMap/
 Accept: application/json
 
