@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 
-const LoginPage = () => {
-  const { login } = useAuth();
+const RegisterPage = () => {
+  const { register } = useAuth();
   const navigate = useNavigate();
 
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const result = await login(email, password);
+    const result = await register(username, email, password); // Lembre-se de ajustar isso no AuthContext
 
     if (result.success) {
       navigate('/');
@@ -24,8 +25,24 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen bg-indigo-950 flex items-center justify-center px-4">
       <div className="bg-indigo-900 p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-3xl font-bold text-white mb-6 text-center">Login</h2>
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">Criar Conta</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
+
+          <div>
+            <label htmlFor="username" className="block mb-2 text-white font-medium">
+              Usuário
+            </label>
+            <input
+              id="username"
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-indigo-950 border border-white text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              placeholder="nome de usuário"
+            />
+          </div>
+
           <div>
             <label htmlFor="email" className="block mb-2 text-white font-medium">
               Email
@@ -60,14 +77,14 @@ const LoginPage = () => {
             type="submit"
             className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-lg font-semibold transition"
           >
-            Entrar
+            Registrar
           </button>
         </form>
 
         <p className="text-center text-white mt-6">
-          Não tem uma conta?{' '}
-          <Link to="/register" className="text-indigo-300 hover:underline">
-            Crie uma agora
+          Já tem uma conta?{' '}
+          <Link to="/login" className="text-indigo-300 hover:underline">
+            Faça login
           </Link>
         </p>
       </div>
@@ -75,4 +92,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
