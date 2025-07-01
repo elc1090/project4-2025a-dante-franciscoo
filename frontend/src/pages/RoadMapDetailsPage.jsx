@@ -7,7 +7,6 @@ import Get_RoadMap from '../requests/GetRoadMap';
 import DeleteRoadMap from '../requests/DeleteRoadMap';
 import mermaid from 'mermaid';
 import MarkdownTimeline from '../components/MarkdownTimeline';
-import DeleteRoadMap from '../requests/DeleteRoadMap';
 
 const fakeRoadmaps = [
   { id: '1',
