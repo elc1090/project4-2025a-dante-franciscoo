@@ -8,6 +8,7 @@ async function DeleteRoadMap(id) {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
+
         });
     } catch (error) {
         console.error('Erro ao deletar roadmap', error);

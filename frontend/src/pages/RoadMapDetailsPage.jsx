@@ -143,8 +143,11 @@ const RoadMapDetailsPage = () => {
     };
   }, [aiOutput]);
 
-  const handleDelete = () => {
-    DeleteRoadMap(roadmap.id);
+  const isOwner = user && roadmap?.userid === user.id;
+
+  const handleDelete = async () => {
+    await DeleteRoadMap(roadmap.id);
+
     alert('Roadmap excluído!');
   };
 
